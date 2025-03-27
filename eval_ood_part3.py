@@ -34,10 +34,10 @@ def evaluate_ood(model, distortion_name, severity, CONFIG):
         pin_memory=True)
 
     # Normalize after converting to tensor
-    # Apply the same transformations as in your training pipeline
+    # Apply the same transformations as in the training pipeline
     transform = transforms.Compose([
         transforms.Resize(256),
-        transforms.CenterCrop(224),  # Use CenterCrop instead of RandomCrop for evaluation
+        transforms.CenterCrop(224),  
         transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
     ])    
     predictions = []  # Store predictions
