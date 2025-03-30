@@ -22,10 +22,12 @@ import json
 class ResNet18(nn.Module):
     def __init__(self):
         super(ResNet18, self).__init__()
+        # Initialize a ResNet18 model 
+        # Pretrained=False because we are training from scratch and num_classes is 100 for CIFAR-100
         self.model = torchvision.models.resnet18(pretrained=False, num_classes=100)
     
     def forward(self, x):
-
+        #Simple forward pass
         return self.model(x)
 
 ################################################################################
@@ -133,10 +135,11 @@ def main():
     #      Data Transformation (Example - You might want to modify) 
     ############################################################################
 
+    # Data augmentation for training data 
     transform_train = transforms.Compose([
         transforms.ToTensor(),
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-        transforms.RandomHorizontalFlip(),
+        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)), #Normalize the input
+        transforms.RandomHorizontalFlip(), #Randomly flip the input horizontally 
     ])
 
     ###############
@@ -172,7 +175,7 @@ def main():
     ############################################################################
     #   Instantiate model and move to target device
     ############################################################################
-    model = ResNet18()  
+    model = ResNet18()  # Model initialization
     model = model.to(CONFIG["device"])   # move it to target device
 
     print("\nModel summary:")
@@ -193,9 +196,9 @@ def main():
     ############################################################################
     # Loss Function, Optimizer and optional learning rate scheduler
     ############################################################################
-    criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001)
-    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=CONFIG["epochs"])
+    criterion = nn.CrossEntropyLoss() # Loss function 
+    optimizer = optim.Adam(model.parameters(), lr=0.001) # Adaptive learning rate - Adam
+    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=CONFIG["epochs"]) # CosineAnnealingLR - Learning rate schedule over epochs
 
 
     # Initialize wandb

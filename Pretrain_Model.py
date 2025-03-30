@@ -23,10 +23,13 @@ class PretrainedResNet50(nn.Module):
     def __init__(self, num_classes=100):
         super(PretrainedResNet50, self).__init__()
         self.model = torchvision.models.resnet50(pretrained=True)
-        num_features = self.model.fc.in_features
-        self.model.fc = nn.Linear(num_features, num_classes)
+        # Load pre-trained ResNet50 weights
+        num_features = self.model.fc.in_features # Get the number of input features
+        self.model.fc = nn.Linear(num_features, num_classes) # Change the output layer to have 100
     def forward(self, x):
+        # Forward pass
         return self.model(x)
+    
 
 ################################################################################
 # Define a one epoch training function
@@ -136,11 +139,11 @@ def main():
     ############################################################################
 
     transform_train = transforms.Compose([
-        transforms.RandomHorizontalFlip(),
-        transforms.Resize(256),
-        transforms.RandomCrop(224, padding=4),
-        transforms.ToTensor(),
-        transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
+        transforms.RandomHorizontalFlip(), # Randomly flip the image horizontally
+        transforms.Resize(256), # Resize to 256x256
+        transforms.RandomCrop(224, padding=4), # Random crop to 224x224
+        transforms.ToTensor(), # Convert to tensor
+        transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)) # ImageNet Normalization
     ])
 
     ###############
@@ -151,7 +154,7 @@ def main():
     transform_test = transforms.Compose([
         transforms.ToTensor(),
         transforms.Resize(256),
-        transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))
+        transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)) 
     ])
 
     ############################################################################
@@ -201,9 +204,9 @@ def main():
     ############################################################################
     # Loss Function, Optimizer and optional learning rate scheduler
     ############################################################################
-    criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=0.0001)
-    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=CONFIG["epochs"])
+    criterion = nn.CrossEntropyLoss() # Loss function
+    optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=0.0001) # Optimizer 
+    scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=CONFIG["epochs"]) # Scheduler
 
 
     # Initialize wandb
